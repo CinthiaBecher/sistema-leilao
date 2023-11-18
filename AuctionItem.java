@@ -2,13 +2,13 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class AuctionItem {
 	private  int itemNumber;
 	private  String itemName;
 	private int highestBid;
 	private String highestBidder;
 	private List<Bid> lista;
+	private boolean paymentApproved;
 
 	public AuctionItem(int itemNum, String name)
 	{
@@ -17,6 +17,7 @@ public class AuctionItem {
 		highestBid = 0;
 		highestBidder = null;
 		lista = new ArrayList<>();
+		paymentApproved = false;
 	}
 
 	public int getItemNumber()
@@ -44,24 +45,28 @@ public class AuctionItem {
 	{ highestBidder = name; }
 	
 	//get maior bidder - return name and valor
-	//get lista inteira
-	//receber bid
 
-	
+	//this method will create a new bid that comes from the server. This is an object type BID, inserted in the list created in this class
 	public void addBid(String nome, int valor) {
 		Bid bid = new Bid(nome, valor);
-		
 		lista.add(bid);
-		
-		for(Bid elemento : lista) {
-			System.out.println(elemento.getNome() + " " + elemento.getValor());
-		}
 	}
 	
-	public void printLista() {
-		for(Bid elemento : lista) {
-			System.out.println(elemento.getNome() + " " + elemento.getValor());
-		}
+	//this method will return the list so it can be printed.
+	public List<Bid> printLista() {
+		return lista;
+	}
+	
+	public int bidsize() {
+		return lista.size();
+	}
+	
+	public boolean isPaymentApproved() {
+		return paymentApproved;
+	}
+	
+	public void approvePayment() {
+		paymentApproved = true;
 	}
 
 }

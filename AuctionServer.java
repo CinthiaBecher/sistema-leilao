@@ -219,7 +219,6 @@ class clientThread extends Thread {
 				listbids(line);
         	}
         
-        
 
 		else {
 			this.os.println(line + " is not a recongnized commmand");
@@ -255,9 +254,7 @@ class clientThread extends Thread {
 	try {
 		//if username is valid (in authorized list)
 		if(isSeller && loginName[1].equals("seller") || !isSeller && "alice,bob,dave,pam,susan,tom,mike".contains(loginName[1])) {
-
 			synchronized (this) {
-
 				//check to see if already logged on
 				for (int i = 0; i < maxClientsCount; i++) {
 					// if so
@@ -378,8 +375,9 @@ class clientThread extends Thread {
   
   //this function will list all bids for the item informed
   void listbids(String input) {
+
 	  try{
-			String[] element = input.split(" ",3);
+			String[] element = input.split(" ", 2);
 			System.out.println(name + ": sent listbids command: " + input);
 
 			synchronized (this) {
@@ -401,9 +399,17 @@ class clientThread extends Thread {
 						temp = iterator.next();
 
 						if (temp.getItemNumber() == Integer.parseInt(element[1])) {
-							//if current node has same item number as bid attempt
+							
+							//if the item number is found, we will call the printLista function so it will return a list of all bids for that item. We will then Loop in this list to print all bids for that item for the seller
 							found = true;
-							temp.printLista();
+							
+							List<Bid> aux = temp.printLista();
+							this.os.println("Lista de lances do item " + temp.getItemName());
+							
+							for(Bid elemento : aux) { 
+								this.os.println(elemento.getNome() + " " + elemento.getValor());
+								
+							}
 						}
 					}
 					if(!found) {
@@ -413,8 +419,8 @@ class clientThread extends Thread {
 			}
 
 		} catch (ArrayIndexOutOfBoundsException | NumberFormatException ex) {
-				this.os.println("> ** Invalid use of command: Bid");
-				this.os.println("> ** Syntax: bid <item number> <bid amount>");
+				this.os.println("> ** Invalid use of command: ListBids");
+				this.os.println("> ** Syntax: listbids <item number> ");
 				System.out.println(name + ": Invalid use of command: " + input);
 		}
   
@@ -475,7 +481,7 @@ class clientThread extends Thread {
 						}
 						else
 						// bid was lower than current highest
-							this.os.println("> You have underbid for item " + temp.getItemNumber() + ".  Current highest bid: " + temp.getHighestBid());
+							this.os.println("> The bid was refused. A bid for item " + temp.getItemName() + " of " + temp.getHighestBid() + " is already placed by " + temp.getHighestBidder());
 
 					}
 				}
